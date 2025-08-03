@@ -1,14 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
 // GET /api/movie/[id]
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, context: { params: { id: string } }) {
   try {
+    const { id } = context.params;
+
     const movie = await db.movie.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!movie) {
@@ -22,15 +21,13 @@ export async function GET(
 }
 
 // PUT /api/movie/[id]
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, context: { params: { id: string } }) {
   try {
-    const body = await request.json();
+    const { id } = context.params;
+    const body = await req.json();
 
     const updated = await db.movie.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title: body.title,
         description: body.description,
@@ -46,13 +43,12 @@ export async function PUT(
 }
 
 // DELETE /api/movie/[id]
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
   try {
+    const { id } = context.params;
+
     await db.movie.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: "Movie deleted successfully" });
