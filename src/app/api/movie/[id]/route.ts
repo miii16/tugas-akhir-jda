@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
-interface Params {
-  params: {
-    id: string;
-  };
-}
-
-export async function GET(request: Request, { params }: Params) {
+// GET /api/movie/[id]
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const movie = await db.movie.findUnique({
       where: { id: params.id },
@@ -23,7 +21,11 @@ export async function GET(request: Request, { params }: Params) {
   }
 }
 
-export async function PUT(request: Request, { params }: Params) {
+// PUT /api/movie/[id]
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const body = await request.json();
 
@@ -43,7 +45,11 @@ export async function PUT(request: Request, { params }: Params) {
   }
 }
 
-export async function DELETE(request: Request, { params }: Params) {
+// DELETE /api/movie/[id]
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     await db.movie.delete({
       where: { id: params.id },
