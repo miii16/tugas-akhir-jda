@@ -3,9 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+interface FormState {
+  title: string;
+  description: string;
+  imageUrl: string;
+  trailerUrl: string;
+}
+
 export default function AddMovieForm() {
   const router = useRouter();
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     title: "",
     description: "",
     imageUrl: "",
@@ -15,11 +22,13 @@ export default function AddMovieForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  function changeHandler(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  function changeHandler(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
-  async function submitHandler(e: React.FormEvent) {
+  async function submitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -37,15 +46,23 @@ export default function AddMovieForm() {
       }
 
       router.push("/");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      // Cek jika error adalah instance Error, jika tidak set error generic
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Terjadi kesalahan tidak terduga");
+      }
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <form onSubmit={submitHandler} className="max-w-lg p-6 mx-auto mt-12 space-y-5 bg-white rounded shadow">
+    <form
+      onSubmit={submitHandler}
+      className="max-w-lg p-6 mx-auto mt-12 space-y-5 bg-white rounded shadow"
+    >
       <h1 className="text-2xl font-bold text-center">Tambah Film Baru</h1>
 
       {error && <p className="text-center text-red-600">{error}</p>}

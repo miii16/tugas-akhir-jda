@@ -26,7 +26,7 @@ export default function AddMovieForm() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.message || "Failed to add movie");
+        throw new Error(data.error || "Gagal menambahkan film");
       }
 
       setTitle("");
@@ -34,8 +34,12 @@ export default function AddMovieForm() {
       setImageUrl("");
       setTrailerUrl("");
       setSuccess(true);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Terjadi kesalahan yang tidak diketahui");
+      }
     } finally {
       setLoading(false);
     }
